@@ -70,6 +70,38 @@ def get_disk_info():
                 disks.append((name, size_mb))
     return disks
 
+def get_usb_devices():
+    usb_devices = []
+    with open('/proc/bus/input/devices', 'r') as f:
+        device = {}
+        for line in f:
+            if line.startswith('T:'):
+                device = {}
+            elif line.startswith('P:'):
+                usb_devices.append(device)
+            elif line.startswith('S:') and 'Product=' in line:
+                device['product'] = line.split('=')[1].strip()
+            elif line.startswith('S:') and 'Manufacturer=' in line:
+                device['manufacturer'] = line.split('=')[1].strip()
+            elif line.startswith('D:') and 'Port=' in line:
+                device['port'] = line.split('=')[1].strip()
+    return usb_devices
+
+def get_network_adapters():
+    adapters = []
+    with open('/proc/net/dev', 'r') as f:
+        for line in f.readlines()[2:]:
+            iface = line.split()[0].replace(':', '')
+            try:
+                with open(f'/proc/net/if_inet6', 'r') as f:
+                    for l in f:
+                        if iface in l:
+                            ip = l.split()[0]
+                            adapters.append((iface, ip))
+            except FileNotFoundError:
+                pass
+    return adapters
+
 class MyHandler(BaseHTTPRequestHandler):
     def do_HEAD(s):
         s.send_response(200)
@@ -89,6 +121,8 @@ class MyHandler(BaseHTTPRequestHandler):
         os_version = get_os_version()
         processes = get_processes()
         disks = get_disk_info()
+        usb_devices = get_usb_devices()
+        network_adapters = get_network_adapters()
 
         response = f"""
         <html>
@@ -110,6 +144,14 @@ class MyHandler(BaseHTTPRequestHandler):
         <h2>Disks</h2>
         <ul>
         {''.join([f"<li>{name}: {size_mb} MB</li>" for name, size_mb in disks])}
+        </ul>
+        <h2>USB Devices</h2>
+        <ul>
+        {''.join([f"<li>Product: {dev.get('product', 'N/A')}, Manufacturer: {dev.get('manufacturer', 'N/A')}, Port: {dev.get('port', 'N/A')}</li>" for dev in usb_devices])}
+        </ul>
+        <h2>Network Adapters</h2>
+        <ul>
+        {''.join([f"<li>{iface}: {ip}</li>" for iface, ip in network_adapters])}
         </ul>
         </body>
         </html>
