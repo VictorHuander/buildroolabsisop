@@ -5,7 +5,7 @@ import os
 import subprocess
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-HOST_NAME = '127.0.0.1'
+HOST_NAME = '192.168.1.10'
 PORT_NUMBER = 8000
 BUILDROOT_HOST = 'buildroot_ip'
 BUILDROOT_USER = 'root'
