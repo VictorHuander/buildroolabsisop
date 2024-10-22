@@ -1,0 +1,1 @@
+cmd_/workspaces/buildroolabsisop/modules/simple_driver/built-in.o :=  rm -f /workspaces/buildroolabsisop/modules/simple_driver/built-in.o; ar rcSTPD /workspaces/buildroolabsisop/modules/simple_driver/built-in.o
