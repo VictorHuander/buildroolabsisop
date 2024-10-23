@@ -11,7 +11,7 @@
 
 #define BUFFER_LENGTH 512
 #define DISK_SZ 1073741824
-#define FORKS 8
+#define FORKS 4
 
 int main()
 {

@@ -1,0 +1,1 @@
+cmd_/workspaces/buildroolabsisop/modules/ssft_iosched/built-in.o :=  rm -f /workspaces/buildroolabsisop/modules/ssft_iosched/built-in.o; ar rcSTPD /workspaces/buildroolabsisop/modules/ssft_iosched/built-in.o
